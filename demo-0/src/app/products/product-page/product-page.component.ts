@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { Product } from '../product.model';
 import { ProductsService } from '../products.service';
 import { Store } from '@ngrx/store';
+import { selectProductById, selectProductsErrorMessage, selectProductsLoading } from '../state/products.selectors';
+import { ProductsPageActions } from '../state/products.actions';
 
 @Component({
   selector: 'app-product-page',
@@ -11,35 +13,28 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./product-page.component.css'],
 })
 export class ProductPageComponent {
-  product$: Observable<Product> | undefined;
+
+  product$ = this.store.select(selectProductById);
+  loading$ = this.store.select(selectProductsLoading);
+  errorMessage$ = this.store.select(selectProductsErrorMessage);
+
 
   constructor(
-    private productsService: ProductsService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
+    private store: Store
     
   ) { }
 
-  ngOnInit() {
-    const productId = parseInt(this.activatedRoute.snapshot.params['id']);
-    this.getProduct(productId);    
-  }
-
-  getProduct(id: number) {
-    this.product$ = this.productsService.getById(id);
-  }
-
   addProduct(product: Product) {
-    this.productsService.add(product).subscribe(this.goToProductsPage);
+    
+    this.store.dispatch(ProductsPageActions.addProduct({ product }));
   }
 
   updateProduct(product: Product) {
-    this.productsService.update(product).subscribe(this.goToProductsPage);
+    this.store.dispatch(ProductsPageActions.updateProduct({ product }));
   }
 
   deleteProduct(id: number) {
-    this.productsService.delete(id).subscribe(this.goToProductsPage);
+    this.store.dispatch(ProductsPageActions.deleteProduct({ id }));
   }
 
-  goToProductsPage = () => this.router.navigate(['/products']);
 }

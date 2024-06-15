@@ -39,7 +39,7 @@ export const productsReducer = createReducer(
         products: [],
         errorMessage: message
     })),
-    on(ProductsPageActions.addProducts, (state) => ({
+    on(ProductsPageActions.addProduct, (state) => ({
         ...state,
         loading: true,
         errorMessage: ''
