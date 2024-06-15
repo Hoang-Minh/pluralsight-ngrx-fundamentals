@@ -52,7 +52,7 @@ export class ProductEffects {
       concatMap(({product}) =>
         this.productService.update(product).pipe(
           map((product) =>
-            ProductsApiActions.productUpdatedSuccess({ product })
+            ProductsApiActions.productUpdatedSuccess({ update: {id: product.id, changes: product } })
           ),
           catchError((error) =>
             of(ProductsApiActions.productUpdatedFailure({ message: error }))
